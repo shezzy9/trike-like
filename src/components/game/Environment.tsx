@@ -1,11 +1,8 @@
 
-import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import React, { useRef } from 'react';
 import Target from './Target';
 
 export default function Environment() {
-  const floorRef = useRef();
-  
   return (
     <>
       {/* Ambient Light */}

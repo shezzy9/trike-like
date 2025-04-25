@@ -45,6 +45,7 @@ export default function Target({ position }: TargetProps) {
       ref={meshRef}
       position={position}
       onClick={handleClick}
+      castShadow
     >
       <boxGeometry args={[1, 2, 1]} />
       <meshStandardMaterial color={isHit ? "#FF0000" : "#FF6347"} />

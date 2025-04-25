@@ -5,7 +5,6 @@ import { Vector3 } from 'three';
 import { useGameStore } from '@/store/gameStore';
 
 const MOVE_SPEED = 0.1;
-const TARGET_DISTANCE = 0.5;
 
 export default function Player() {
   const { camera } = useThree();

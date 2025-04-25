@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useGameStore } from '@/store/gameStore';
-import { DoubleSide, Mesh } from 'three';
+import { Mesh } from 'three';
 
 export default function Weapon() {
   const meshRef = useRef<Mesh>(null);
