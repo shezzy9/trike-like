@@ -1,5 +1,5 @@
 
-import GameScene from './game/GameScene';
+import GameScene from './GameScene'; 
 import GameUI from './game/GameUI';
 import MainMenu from './game/MainMenu';
 import { useGameStore } from '@/store/gameStore';

@@ -1,54 +1,54 @@
 
-import { useRef, useState } from 'react';
-import { Mesh, Vector3 } from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 
 interface TargetProps {
-  position: [number, number, number];
+  position: { x: number, y: number };
+  size?: number;
+  speed?: number;
+  points?: number;
 }
 
-export default function Target({ position }: TargetProps) {
-  const meshRef = useRef<Mesh>(null);
+export default function Target({ 
+  position, 
+  size = 40, 
+  speed = 1,
+  points = 100 
+}: TargetProps) {
   const [isHit, setIsHit] = useState(false);
+  const [pos, setPos] = useState(position);
   const incrementScore = useGameStore(state => state.incrementScore);
   
-  useFrame(() => {
-    if (meshRef.current && isHit) {
-      meshRef.current.scale.y = Math.max(0, meshRef.current.scale.y - 0.05);
-      if (meshRef.current.scale.y <= 0.05) {
-        setIsHit(false);
-        if (meshRef.current) {
-          meshRef.current.scale.y = 1;
-          // Move target to new position
-          const newPos = new Vector3(
-            position[0] + (Math.random() - 0.5) * 10,
-            position[1],
-            position[2] + (Math.random() - 0.5) * 10
-          );
-          meshRef.current.position.copy(newPos);
-        }
-      }
-    }
-  });
-  
-  const handleClick = (e: any) => {
+  const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!isHit) {
       setIsHit(true);
-      incrementScore(100);
+      incrementScore(points);
+      
+      // Reset target after a short delay
+      setTimeout(() => {
+        setIsHit(false);
+        // Move to new random position
+        setPos({
+          x: Math.random() * (window.innerWidth - 100),
+          y: Math.random() * (window.innerHeight - 100)
+        });
+      }, 500);
     }
   };
   
   return (
-    <mesh
-      ref={meshRef}
-      position={position}
+    <div 
+      className={`absolute rounded-full cursor-pointer transition-all duration-200 
+        ${isHit ? 'bg-red-700 scale-75 opacity-50' : 'bg-red-500 hover:bg-red-600'}`}
+      style={{ 
+        left: pos.x, 
+        top: pos.y, 
+        width: `${size}px`, 
+        height: `${size}px`,
+        transform: isHit ? 'scale(0.8)' : 'scale(1)'
+      }}
       onClick={handleClick}
-      castShadow
-    >
-      <boxGeometry args={[1, 2, 1]} />
-      <meshStandardMaterial color={isHit ? "#FF0000" : "#FF6347"} />
-    </mesh>
+    />
   );
 }

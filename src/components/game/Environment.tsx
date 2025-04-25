@@ -1,68 +1,33 @@
 
-import React, { useRef } from 'react';
+import React from 'react';
 import Target from './Target';
 
 export default function Environment() {
+  // Create a set of targets with random positions
+  const targetPositions = Array.from({ length: 10 }, () => ({
+    x: Math.random() * (window.innerWidth - 100),
+    y: Math.random() * (window.innerHeight - 100)
+  }));
+  
   return (
-    <>
-      {/* Ambient Light */}
-      <ambientLight intensity={0.3} />
-      
-      {/* Directional Light (sunlight) */}
-      <directionalLight
-        position={[10, 10, 5]}
-        intensity={1}
-        castShadow
-      />
-      
-      {/* Floor */}
-      <mesh 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        position={[0, -1, 0]} 
-        receiveShadow
-      >
-        <planeGeometry args={[100, 100]} />
-        <meshStandardMaterial color="#6F7378" />
-      </mesh>
-      
-      {/* Walls */}
-      <mesh position={[-20, 5, 0]} castShadow>
-        <boxGeometry args={[1, 10, 40]} />
-        <meshStandardMaterial color="#8D8E8F" />
-      </mesh>
-      
-      <mesh position={[20, 5, 0]} castShadow>
-        <boxGeometry args={[1, 10, 40]} />
-        <meshStandardMaterial color="#8D8E8F" />
-      </mesh>
-      
-      <mesh position={[0, 5, -20]} castShadow>
-        <boxGeometry args={[40, 10, 1]} />
-        <meshStandardMaterial color="#8D8E8F" />
-      </mesh>
-      
-      <mesh position={[0, 5, 20]} castShadow>
-        <boxGeometry args={[40, 10, 1]} />
-        <meshStandardMaterial color="#8D8E8F" />
-      </mesh>
+    <div className="fixed inset-0 bg-gray-800 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-10" />
       
       {/* Obstacles */}
-      <mesh position={[-5, 1, -5]} castShadow>
-        <boxGeometry args={[3, 2, 3]} />
-        <meshStandardMaterial color="#7D7F81" />
-      </mesh>
-      
-      <mesh position={[5, 1, 5]} castShadow>
-        <boxGeometry args={[3, 2, 3]} />
-        <meshStandardMaterial color="#7D7F81" />
-      </mesh>
+      <div className="absolute left-1/4 top-1/4 w-40 h-20 bg-gray-600 rounded-md" />
+      <div className="absolute right-1/4 bottom-1/4 w-20 h-40 bg-gray-600 rounded-md" />
+      <div className="absolute left-1/3 bottom-1/3 w-32 h-32 bg-gray-600 rounded-md" />
       
       {/* Targets */}
-      <Target position={[8, 1, -8]} />
-      <Target position={[-8, 1, 8]} />
-      <Target position={[0, 1, -15]} />
-      <Target position={[-12, 1, -12]} />
-      <Target position={[12, 1, 12]} />
-    </>
+      {targetPositions.map((pos, index) => (
+        <Target 
+          key={index} 
+          position={pos} 
+          size={index % 3 === 0 ? 50 : 30} 
+          points={index % 3 === 0 ? 50 : 100}
+        />
+      ))}
+    </div>
   );
 }

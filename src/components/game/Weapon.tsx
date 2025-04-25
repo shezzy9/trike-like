@@ -1,12 +1,9 @@
 
-import { useRef, useState, useEffect } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
-import { Mesh } from 'three';
 
 export default function Weapon() {
-  const meshRef = useRef<Mesh>(null);
-  const { camera } = useThree();
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isFiring, setIsFiring] = useState(false);
   
   const fireWeapon = useGameStore(state => state.fireWeapon);
@@ -15,14 +12,19 @@ export default function Weapon() {
   const isGameActive = useGameStore(state => state.isGameActive);
   const isPaused = useGameStore(state => state.isPaused);
   
+  // Track mouse position
   useEffect(() => {
     if (!isGameActive || isPaused) return;
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+    };
     
     const handleMouseDown = () => {
       if (ammo > 0) {
         setIsFiring(true);
         fireWeapon();
-        setTimeout(() => setIsFiring(false), 100);
+        setTimeout(() => setIsFiring(false), 200);
       }
     };
     
@@ -32,40 +34,59 @@ export default function Weapon() {
       }
     };
     
+    window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('keydown', handleKeyDown);
     
     return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [ammo, fireWeapon, reloadWeapon, isGameActive, isPaused]);
   
-  useFrame(() => {
-    if (meshRef.current) {
-      meshRef.current.position.set(
-        camera.position.x + 0.25,
-        camera.position.y - 0.25,
-        camera.position.z - 0.5
-      );
-      meshRef.current.rotation.copy(camera.rotation);
-    }
-  });
+  if (!isGameActive || isPaused) return null;
   
   return (
-    <mesh
-      ref={meshRef}
-      position={[0, -0.25, -0.5]}
-      scale={isFiring ? [0.1, 0.1, 0.2] : [0.1, 0.1, 0.3]}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#444444" />
+    <>
+      {/* Crosshair cursor */}
+      <div 
+        className="fixed pointer-events-none z-50"
+        style={{ 
+          left: `${position.x}px`, 
+          top: `${position.y}px`, 
+          transform: 'translate(-50%, -50%)' 
+        }}
+      >
+        <div className="relative w-6 h-6">
+          <div className="absolute w-6 h-0.5 bg-white top-1/2 left-0 transform -translate-y-1/2"></div>
+          <div className="absolute w-0.5 h-6 bg-white top-0 left-1/2 transform -translate-x-1/2"></div>
+          <div className={`absolute w-2 h-2 rounded-full bg-red-500 ${isFiring ? 'opacity-100' : 'opacity-0'}`} 
+               style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}></div>
+        </div>
+      </div>
       
-      {/* Gun barrel */}
-      <mesh position={[0, 0.1, -0.6]}>
-        <cylinderGeometry args={[0.05, 0.05, 0.5, 16]} />
-        <meshStandardMaterial color="#333333" />
-      </mesh>
-    </mesh>
+      {/* Bullet trail effect */}
+      {isFiring && (
+        <div className="fixed inset-0 pointer-events-none">
+          <div 
+            className="absolute h-0.5 bg-yellow-400 opacity-50 origin-bottom-right"
+            style={{
+              left: window.innerWidth / 2,
+              bottom: 20,
+              width: `${Math.sqrt(
+                Math.pow(position.x - window.innerWidth / 2, 2) + 
+                Math.pow(position.y - (window.innerHeight - 20), 2)
+              )}px`,
+              transform: `rotate(${Math.atan2(
+                position.y - (window.innerHeight - 20), 
+                position.x - window.innerWidth / 2
+              ) * 180 / Math.PI}deg)`,
+              transition: 'all 0.05s ease-out'
+            }}
+          />
+        </div>
+      )}
+    </>
   );
 }
