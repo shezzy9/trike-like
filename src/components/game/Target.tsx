@@ -25,10 +25,8 @@ export default function Target({
       setIsHit(true);
       incrementScore(points);
       
-      // Reset target after a short delay
       setTimeout(() => {
         setIsHit(false);
-        // Move to new random position
         setPos({
           x: Math.random() * (window.innerWidth - 100),
           y: Math.random() * (window.innerHeight - 100)
@@ -39,16 +37,26 @@ export default function Target({
   
   return (
     <div 
-      className={`absolute rounded-full cursor-pointer transition-all duration-200 
-        ${isHit ? 'bg-red-700 scale-75 opacity-50' : 'bg-red-500 hover:bg-red-600'}`}
+      className="absolute cursor-pointer transition-all duration-200"
       style={{ 
         left: pos.x, 
-        top: pos.y, 
-        width: `${size}px`, 
-        height: `${size}px`,
+        top: pos.y,
+        width: `${size}px`,
+        height: `${size * 1.2}px`,
         transform: isHit ? 'scale(0.8)' : 'scale(1)'
       }}
       onClick={handleClick}
-    />
+    >
+      {/* Zombie character */}
+      <div className="relative w-full h-full">
+        {/* Head */}
+        <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 w-1/2 h-1/2 ${isHit ? 'bg-red-900' : 'bg-green-800'} rounded-full`} />
+        {/* Body */}
+        <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-3/4 h-1/2 ${isHit ? 'bg-red-900' : 'bg-green-800'} rounded-md`} />
+        {/* Arms (crooked for zombie effect) */}
+        <div className={`absolute top-1/3 left-0 w-1/4 h-1/3 ${isHit ? 'bg-red-900' : 'bg-green-800'} rounded-full transform rotate-45`} />
+        <div className={`absolute top-1/3 right-0 w-1/4 h-1/3 ${isHit ? 'bg-red-900' : 'bg-green-800'} rounded-full transform -rotate-45`} />
+      </div>
+    </div>
   );
 }

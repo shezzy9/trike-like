@@ -55,14 +55,23 @@ export default function Player() {
   
   return (
     <div 
-      className="absolute bg-blue-600 rounded-md"
+      className="absolute"
       style={{
         left: position.x,
         top: position.y,
-        width: '50px',
-        height: '50px',
         transition: 'all 0.05s ease-out',
       }}
-    />
+    >
+      {/* Human-like character shape */}
+      <div className="relative w-12 h-16">
+        {/* Head */}
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-[#0EA5E9] rounded-full" />
+        {/* Body */}
+        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-[#0EA5E9] rounded-md" />
+        {/* Arms */}
+        <div className="absolute top-6 left-0 w-3 h-6 bg-[#0EA5E9] rounded-full" />
+        <div className="absolute top-6 right-0 w-3 h-6 bg-[#0EA5E9] rounded-full" />
+      </div>
+    </div>
   );
 }
