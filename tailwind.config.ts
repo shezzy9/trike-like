@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				game: {
+					primary: '#4CAF50',
+					secondary: '#F44336',
+					accent: '#2196F3',
+					neutral: '#9E9E9E',
+					'health-bar': '#00C853',
+					'ammo-bar': '#FFD600',
 				}
 			},
 			borderRadius: {
@@ -84,11 +93,22 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'gun-recoil': {
+					'0%': { transform: 'translateY(0px)' },
+					'20%': { transform: 'translateY(10px) rotate(2deg)' },
+					'100%': { transform: 'translateY(0px)' }
+				},
+				'damage-flash': {
+					'0%': { backgroundColor: 'rgba(255, 0, 0, 0.5)' },
+					'100%': { backgroundColor: 'rgba(255, 0, 0, 0)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'gun-recoil': 'gun-recoil 0.2s ease-out',
+				'damage-flash': 'damage-flash 0.3s ease-out',
 			}
 		}
 	},
